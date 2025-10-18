@@ -41,8 +41,8 @@ export default function PopupForgePass({ setPopup }: PopupForgePassProps) {
     return (
         <div className="h-screen w-full fixed bg-gray-900/60 flex justify-center items-center backdrop-blur-sm ">
             <div className="bg-white border border-gray-100 rounded-lg sm:w-full sm:max-w-md p-6 relative">
-                <button onClick={() => setPopup(false)} className="text-black text-xl cursor-pointe absolute z-10 right-3" type="button">
-                    <IoMdClose />
+                <button onClick={() => setPopup(false)} className="text-black text-xl cursor-pointer absolute z-10 right-3" type="button">
+                    <IoMdClose className="" />
                 </button>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-2.5">
