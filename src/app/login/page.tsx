@@ -4,10 +4,13 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import axios from "axios";
+import PopupForgePass from "@/components/PopupForgePass";
+
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isPopup, setPopup] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -95,6 +98,9 @@ export default function LoginPage() {
             >
               {!showPassword ? <FaEyeSlash /> : <FaEye />}
             </div>
+            <div className="flex justify-end">
+              <button onClick={() => setPopup(true)} type="button" className="text-indigo-600 cursor-pointer text-right">forget password?</button>
+            </div>
           </div>
 
           <button
@@ -113,6 +119,7 @@ export default function LoginPage() {
           Register
         </a>
       </p>
+      {isPopup && <PopupForgePass setPopup={setPopup} />}
     </div>
   );
 }
