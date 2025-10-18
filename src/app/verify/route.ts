@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 import { DBconnect } from "@/dbConfig/dbConfig";
 import User from "@/models/User";
 
-export async function GET(request: NextResponse) {
+export async function GET(request: NextRequest) {
   try {
     await DBconnect();
 

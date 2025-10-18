@@ -33,7 +33,7 @@ export default function LoginPage() {
     }
 
     try {
-      const res = await axios.post("/api/login", { email, password });
+      const res = await axios.post("/api/user/login", { email, password });
       toast.success("Login successful!");
       // Redirect after success
       window.location.href = "/";

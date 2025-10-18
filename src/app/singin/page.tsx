@@ -94,7 +94,7 @@ export default function SinginPage() {
     }
 
     try {
-      const res = await axios.post("/api/signin", formData);
+      const res = await axios.post("/api/user/signin", formData);
       toast.success("Sign in successful!");
       // optional: redirect user
       window.location.href = "/";

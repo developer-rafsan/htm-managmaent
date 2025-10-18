@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { DBconnect } from "@/dbConfig/dbConfig";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { sendEmail } from "@/helper/sendEmail.js";
 
-export async function POST(request: NextResponse) {
+export async function POST(request: NextRequest) {
   try {
     await DBconnect();
 
