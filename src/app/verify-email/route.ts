@@ -11,9 +11,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const token = searchParams.get("token");
 
-    console.log(token);
-    
-
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Token is missing" },

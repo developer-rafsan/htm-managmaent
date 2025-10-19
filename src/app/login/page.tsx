@@ -112,13 +112,6 @@ export default function LoginPage() {
           </button>
         </form>
       </div>
-
-      <p className="text-center mt-2 text-sm/6">
-        Don’t have an account?{" "}
-        <a className="text-indigo-600" href="/singin">
-          Register
-        </a>
-      </p>
       {isPopup && <PopupForgePass setPopup={setPopup} />}
     </div>
   );

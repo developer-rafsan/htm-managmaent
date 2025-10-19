@@ -1,23 +1,67 @@
+export const runtime = "nodejs";
 import { NextResponse, NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-
-  const isPublicPath =
-    path === "/login" || path === "/singin" || path === "/verify";
-
   const token = request.cookies.get("token")?.value || "";
 
+  // Public routes
+  const isPublicPath = path === "/login" || path === "/verify";
+
+  // If logged-in
   if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/", request.nextUrl));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // If no token and trying to access private routes
   if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
+
+  // Token validation & role-based control
+  if (token) {
+    try {
+      const decoded: any = jwt.verify(token, process.env.SECRET_KEY!);
+      const role = decoded.role;
+
+      // Employer-only routes
+      if (path.startsWith("/user/employer") && role !== "employer") {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+
+      // Team-only routes
+      if (path.startsWith("/user/team") && role !== "team") {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+
+      // Manager-only routes
+      if (
+        (path.startsWith("/user/manager") || path.startsWith("/singin")) &&
+        role !== "manager"
+      ) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    } catch (error) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
+  return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+//Match all relevant routes
 export const config = {
-  matcher: ["/", "/profile/:path*", "/login", "/signin", "/verify"],
+  matcher: [
+    "/",
+    "/login",
+    "/verify",
+    "/user/employer/profile/:path*",
+    "/user/employer/project",
+    "/user/team/profile/:path*",
+    "/user/team/project",
+    "/user/manager/profile/:path*",
+    "/user/manager/project",
+    "/singin",
+  ],
 };

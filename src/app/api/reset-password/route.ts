@@ -2,14 +2,15 @@ import { NextResponse, NextRequest } from "next/server";
 import { DBconnect } from "@/dbConfig/dbConfig";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "@/helper/sendEmail";
 
 export async function POST(request: NextRequest) {
   try {
     await DBconnect();
 
-    const { email, password } = await request.json();
+    const { email } = await request.json();
 
-    if (!email || !password) {
+    if (!email) {
       return NextResponse.json(
         { success: false, message: "Email and password are required" },
         { status: 400 }
@@ -32,36 +33,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Compare password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return NextResponse.json(
-        { success: false, message: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
     // Generate JWT
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.SECRET_KEY,
-      { expiresIn: "30d" }
+      { expiresIn: "30m" }
     );
 
-    // Create response
-    const response = NextResponse.json({
-      success: true,
-      message: "Login successful",
+    const resetUrl = `${process.env.BASE_URL}/reset-password?token=${token}`;
+
+    const message = `
+        <h1>Reset Your Password</h1>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetUrl}" target="_blank">${resetUrl}</a>`;
+
+    await sendEmail({
+      email: email,
+      subject: "reset password",
+      message,
     });
 
-    // Set token in secure cookie
-    response.cookies.set({
-      name: "token",
-      value: token,
-      httpOnly: true,
-    });
-
-    return response;
+    return NextResponse.json(
+      { success: true, message: "Send the code check your email" },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Server error" },

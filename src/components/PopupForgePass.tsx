@@ -24,7 +24,7 @@ export default function PopupForgePass({ setPopup }: PopupForgePassProps) {
         setLoading(true);
 
         try {
-            const res = await axios.post("/api/send-code", { email });
+            const res = await axios.post("/api/reset-password", { email });
 
             if (res.data.success) {
                 toast.success("Code sent successfully!");

@@ -1,7 +1,6 @@
 import mongoose, { Schema, models } from "mongoose";
 import bcrypt from "bcryptjs";
 
-
 // function to generate unique 7-digit user ID
 function generateUserId() {
   return Math.floor(1000000 + Math.random() * 9000000);
@@ -126,10 +125,7 @@ const UserSchema = new Schema(
 
 // Pre-save hook to hash password
 UserSchema.pre("save", async function (next) {
-  console.log('ok');
-  
-  if (!this.isModified("password")) return next(); 
-
+  if (!this.isModified("password")) return next();
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -140,7 +136,9 @@ UserSchema.pre("save", async function (next) {
 });
 
 // Optional: Add a method to compare password
-UserSchema.methods.comparePassword = async function (candidatePassword: string) {
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string
+) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 

@@ -11,7 +11,7 @@ export default function ProfilePage() {
     const res = await axios.get('/api/user/getuser')
     const id = res.data?.data?._id;
     if (id) {
-      router.push(`/profile/${id}`);
+      router.push(`/user/employer/profile/${id}`);
     }
 
     return;

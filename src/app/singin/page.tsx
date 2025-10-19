@@ -441,7 +441,6 @@ export default function SinginPage() {
             </div>
           </form>
         </div>
-        <p className="text-center mt-2 text-sm/6">have an account? <a className="text-indigo-600" href="/login">Login</a></p>
       </div>
     </>
   );
