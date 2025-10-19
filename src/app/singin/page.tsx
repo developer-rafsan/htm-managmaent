@@ -14,6 +14,7 @@ interface FormData {
   state: string;
   zip: string;
   position: string;
+  role: string,
   blood: string,
   number: string;
   email: string;
@@ -37,6 +38,7 @@ export default function SinginPage() {
     "state": "",
     "zip": "",
     "position": "",
+    "role": "",
     "blood": "",
     "number": "",
     "email": "",
@@ -317,6 +319,23 @@ export default function SinginPage() {
                     <option value="">Select your position</option>
                     <option value="web developer">Web Developer</option>
                     <option value="web designer">Web Designer</option>
+                  </select>
+                </div>
+
+                <div className="mb-2.5">
+                  <label htmlFor="role" className="block text-sm/6 font-medium capitalize">
+                    User Role
+                  </label>
+                  <select
+                    onChange={handleChange}
+                    value={formData.role}
+                    className="block w-full rounded-md text-base outline-none bg-gray-100 border border-gray-200 py-1 px-3 mt-1"
+                    name="role"
+                    id="role"
+                  >
+                    <option value="">Select user role</option>
+                    <option value="team">Team</option>
+                    <option value="employer">employer</option>
                   </select>
                 </div>
 

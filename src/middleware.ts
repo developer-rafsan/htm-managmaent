@@ -7,7 +7,8 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value || "";
 
   // Public routes
-  const isPublicPath = path === "/login" || path === "/verify";
+  const isPublicPath =
+    path === "/login" || path === "/verify" || path === "/reset-password";
 
   // If logged-in
   if (isPublicPath && token) {
@@ -37,7 +38,9 @@ export async function middleware(request: NextRequest) {
 
       // Manager-only routes
       if (
-        (path.startsWith("/user/manager") || path.startsWith("/singin")) &&
+        (path.startsWith("/user/manager") ||
+          path.startsWith("/singin") ||
+          path.startsWith("/project/create")) &&
         role !== "manager"
       ) {
         return NextResponse.redirect(new URL("/", request.url));
@@ -56,12 +59,17 @@ export const config = {
     "/",
     "/login",
     "/verify",
+    "/reset-password",
+
+    // for employer
     "/user/employer/profile/:path*",
-    "/user/employer/project",
+
+    // for team
     "/user/team/profile/:path*",
-    "/user/team/project",
+
+    // for manager
     "/user/manager/profile/:path*",
-    "/user/manager/project",
+    "/project/create",
     "/singin",
   ],
 };
