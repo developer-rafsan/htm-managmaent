@@ -1,24 +1,19 @@
 "use client";
 import axios from "axios";
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 
 export default function ProfilePage() {
-  const router = useRouter();
+  const [userData, setUserData] = useState()
+
 
   const getUserDetails = async () => {
     const res = await axios.get('/api/user/getuser')
-    const id = res.data?.data?._id;
-    if (id) {
-      router.push(`/user/manager/profile/${id}`);
-    }
-
-    return;
+    console.log(res);
   }
 
   useEffect(() => {
-    getUserDetails();
+    getUserDetails()
   }, [])
 
   return (

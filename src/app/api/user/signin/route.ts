@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       verificationToken: token,
     });
 
-    const verifyUrl = `${process.env.BASE_URL}/verify-email?token=${token}`;
+    const verifyUrl = `${process.env.BASE_URL}/api/verify-email?token=${token}`;
 
     const message = `
     <h1>Verify Your Email</h1>

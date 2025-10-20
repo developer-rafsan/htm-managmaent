@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
   // Public routes
   const isPublicPath =
-    path === "/login" || path === "/verify" || path === "/reset-password";
+    path === "/login" || path === "/verify-email" || path === "/reset-password";
 
   // If logged-in
   if (isPublicPath && token) {
@@ -27,18 +27,18 @@ export async function middleware(request: NextRequest) {
       const role = decoded.role;
 
       // Employer-only routes
-      if (path.startsWith("/user/employer") && role !== "employer") {
+      if (path.startsWith("/profile/employer") && role !== "employer") {
         return NextResponse.redirect(new URL("/", request.url));
       }
 
       // Team-only routes
-      if (path.startsWith("/user/team") && role !== "team") {
+      if (path.startsWith("/profile/team") && role !== "team") {
         return NextResponse.redirect(new URL("/", request.url));
       }
 
       // Manager-only routes
       if (
-        (path.startsWith("/user/manager") ||
+        (path.startsWith("/profile/manager") ||
           path.startsWith("/singin") ||
           path.startsWith("/project/create")) &&
         role !== "manager"
@@ -58,17 +58,17 @@ export const config = {
   matcher: [
     "/",
     "/login",
-    "/verify",
+    "/verify-email",
     "/reset-password",
 
     // for employer
-    "/user/employer/profile/:path*",
+    "/profile/employer",
 
     // for team
-    "/user/team/profile/:path*",
+    "/profile/team",
 
     // for manager
-    "/user/manager/profile/:path*",
+    "/profile/manager",
     "/project/create",
     "/singin",
   ],
