@@ -47,10 +47,9 @@ export default function ProjectCreate() {
         clientName: "",
         orderId: "",
         projectType: "",
-        projectStatus: "pending",
         projectBudget: "",
         withoutFiverrBudget: "",
-        files: [] as File[],
+        projectConversationfiles: [] as File[],
         projectResourceFiles: [] as File[],
         projectReferences: [""],
         projectFigmas: [""],
@@ -101,7 +100,7 @@ export default function ProjectCreate() {
         });
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, key: "files" | "projectResourceFiles") => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, key: "projectConversationfiles" | "projectResourceFiles") => {
         const files = e.target.files ? Array.from(e.target.files) : [];
         setProjectData((prev) => ({ ...prev, [key]: files }));
     };
@@ -114,15 +113,51 @@ export default function ProjectCreate() {
         setLoading(true);
 
         try {
-            const res = await axios.post("/api/project/create", projectData);
+            const formData = new FormData();
+
+            // Helper: append any field (including nested/arrays)
+            const appendFormData = (data: any, parentKey = "") => {
+                Object.entries(data).forEach(([key, value]) => {
+                    const formKey = parentKey ? `${parentKey}[${key}]` : key;
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item, index) => {
+                            if (item instanceof File) {
+                                formData.append(formKey, item);
+                            } else {
+                                formData.append(`${formKey}[${index}]`, item);
+                            }
+                        });
+                    } else if (value instanceof File) {
+                        formData.append(formKey, value);
+                    } else if (typeof value === "object" && value !== null) {
+                        appendFormData(value, formKey);
+                    } else if (value !== undefined && value !== null) {
+                        formData.append(formKey, value as string);
+                    }
+                });
+            };
+
+            // Build form data from your projectData
+            appendFormData(projectData);
+
+            // Send request
+            const res = await axios.post("/api/project/create", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            console.log(res);
+            
             toast.success(res.data.message || "Project created successfully!");
-            location.reload();
+            // location.reload();
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Project creation failed!");
         } finally {
             setLoading(false);
         }
     };
+
+
 
     /* -----------------------------------------------
     COMPONENT JSX
@@ -162,7 +197,7 @@ export default function ProjectCreate() {
 
                 {/* File Upload Section */}
                 {[
-                    { key: "files", label: "Upload Client Conversation Files", color: "indigo" },
+                    { key: "projectConversationfiles", label: "Upload Client Conversation Files", color: "indigo" },
                     { key: "projectResourceFiles", label: "Upload Project Resource Files", color: "green" },
                 ].map(({ key, label, color }) => (
                     <div key={key}>

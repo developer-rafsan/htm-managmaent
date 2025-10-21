@@ -1,90 +1,74 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, models, model } from "mongoose";
 
+/* --------------------------
+   Subschemas
+----------------------------*/
+const FileSchema = new Schema(
+  {
+    asset_id: { type: String, required: true },
+    url: { type: String, required: true },
+  },
+  { _id: false }
+);
+
+const NoteSchema = new Schema(
+  {
+    date: { type: Date, default: Date.now },
+    userid: { type: String, required: true },
+    what: { type: String, required: true },
+  },
+  { _id: false }
+);
+
+const RatingSchema = new Schema(
+  {
+    userid: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    rate: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String },
+    tips: { type: Number, default: 0 },
+  },
+  { _id: false }
+);
+
+const DomainSchema = new Schema(
+  {
+    url: { type: String },
+    userId: { type: String },
+    password: { type: String },
+  },
+  { _id: false }
+);
+
+/* --------------------------
+   Main Project Schema
+----------------------------*/
 const ProjectSchema = new Schema(
   {
     clientName: { type: String, required: true },
     orderId: { type: String, required: true, unique: true },
-
     projectType: {
       type: String,
       enum: ["web", "graphic", "figma"],
       required: true,
     },
-
     projectStatus: { type: String, default: "pending" },
-
     projectBudget: { type: Number, required: true },
-    withoutFiverrBudget: { type: Number },
-
-    // Updated: files array instead of single string
-    files: [
-      {
-        name: { type: String },
-        url: { type: String },
-      },
-    ],
-
-    // Updated: projectResourceFiles array
-    projectResourceFiles: [
-      {
-        name: { type: String },
-        url: { type: String },
-      },
-    ],
-
-    // Multiple References
+    withoutFiverrBudget: { type: Number, default: 0 },
+    projectConversationFiles: [FileSchema],
+    projectResourceFiles: [FileSchema],
     projectReferences: [{ type: String }],
-
-    // Multiple Figma Links
     projectFigmas: [{ type: String }],
-
-    // Our Domain Details
-    ourDomainDetails: {
-      url: { type: String },
-      userId: { type: String },
-      password: { type: String },
-    },
-
-    // Client Existing Site
-    clientExistingSite: {
-      url: { type: String },
-      userId: { type: String },
-      password: { type: String },
-    },
-
-    // project description
-    projectDescription: {
-      type: String,
-    },
-
-    //  Notes
-    note: [
-      {
-        date: { type: Date, default: Date.now },
-        userid: { type: String },
-        what: { type: String },
-      },
-    ],
-
-    // Delivery date
-    deliveryDate: { type: Date },
-
-    // Project Rating
-    projectRating: [
-      {
-        userid: { type: String },
-        date: { type: Date },
-        rate: { type: Number, min: 1, max: 5 },
-        comment: { type: String },
-        tips: { type: Number },
-      },
-    ],
-
-    // Project Progress optional, default 0
+    ourDomainDetails: DomainSchema,
+    clientExistingSite: DomainSchema,
+    projectDescription: { type: String, default: "" },
+    note: [NoteSchema],
+    deliveryDate: { type: Date, required: true },
+    projectRating: [RatingSchema],
     projectProgress: { type: Number, default: 0, min: 0, max: 100 },
   },
   { timestamps: true }
 );
 
-const Project = models.Project || mongoose.model("Project", ProjectSchema);
+const Project = models.Project || model("Project", ProjectSchema);
 export default Project;
