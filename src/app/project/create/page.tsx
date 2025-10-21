@@ -116,22 +116,7 @@ export default function ProjectCreate() {
         try {
             const res = await axios.post("/api/project/create", projectData);
             toast.success(res.data.message || "Project created successfully!");
-            setProjectData({
-                clientName: "",
-                orderId: "",
-                projectType: "",
-                projectStatus: "pending",
-                projectBudget: "",
-                withoutFiverrBudget: "",
-                files: [],
-                projectResourceFiles: [],
-                projectReferences: [""],
-                projectFigmas: [""],
-                ourDomainDetails: { url: "", userId: "", password: "" },
-                clientExistingSite: { url: "", userId: "", password: "" },
-                projectDescription: "",
-                deliveryDate: "",
-            });
+            location.reload();
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Project creation failed!");
         } finally {
@@ -150,8 +135,8 @@ export default function ProjectCreate() {
                 onSubmit={handleSubmit}
                 className="bg-white border border-gray-200 rounded-xl sm:w-full sm:max-w-2xl p-6 shadow-lg space-y-5"
             >
-                <InputField label="Client Name" name="clientName" value={projectData.clientName} onChange={handleChange} />
-                <InputField label="Order ID" name="orderId" value={projectData.orderId} onChange={handleChange} />
+                <InputField label="Client Name" name="clientName" value={projectData.clientName} placeholder="Client Name" onChange={handleChange} />
+                <InputField label="Order ID" name="orderId" value={projectData.orderId} placeholder="Order ID" onChange={handleChange} />
 
                 {/* Project Type */}
                 <div>
@@ -171,8 +156,8 @@ export default function ProjectCreate() {
 
                 {/* Budgets */}
                 <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Project Budget ($)" name="projectBudget" type="number" value={projectData.projectBudget} onChange={handleChange} />
-                    <InputField label="Without Fiverr Budget ($)" name="withoutFiverrBudget" type="number" value={projectData.withoutFiverrBudget} onChange={handleChange} />
+                    <InputField label="Project Budget" name="projectBudget" type="number" value={projectData.projectBudget} placeholder="$" onChange={handleChange} />
+                    <InputField label="Without Fiverr Budget" name="withoutFiverrBudget" type="number" value={projectData.withoutFiverrBudget} placeholder="$" onChange={handleChange} />
                 </div>
 
                 {/* File Upload Section */}

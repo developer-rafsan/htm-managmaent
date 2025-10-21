@@ -48,7 +48,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post("/api/reset-password/create-password", {
+      const res = await axios.post(`/api/reset-password/${token}`, {
         token,
         password,
         confirmPassword,

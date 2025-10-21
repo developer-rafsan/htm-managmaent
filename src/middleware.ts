@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Token validation & role-based control
-  if (token) {
+  if (token) {    
     try {
       const decoded: any = jwt.verify(token, process.env.SECRET_KEY!);
       const role = decoded.role;
